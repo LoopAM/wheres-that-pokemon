@@ -1,3 +1,6 @@
 import css from './styles.css';
+import { startGame, submitScore, displayLeaderboard } from './logic';
 
-console.log('hello');
+document.getElementById('start-btn').addEventListener('click', startGame);
+document.getElementById('leaderboard-btn').addEventListener('click', displayLeaderboard);
+document.getElementById('submit-btn').addEventListener('click', submitScore);
