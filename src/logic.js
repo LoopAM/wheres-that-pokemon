@@ -205,14 +205,13 @@ function submitScore(e) {
   }).catch( error => {
     console.log('Error writing document', error);
   });
-
-
 }
 
 // Leaderboard funtionality -----------------------------
 function displayLeaderboard() {
   const leaderboard = document.getElementById('leaderboard-screen');
   const leaderboardDiv = document.getElementById('leaderboard-div');
+  leaderboardDiv.innerHTML = '';
 
   store.collection('scores').get().then( scores => {
     scores.forEach( obj => {

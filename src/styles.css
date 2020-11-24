@@ -98,6 +98,11 @@ body {
   align-items: center;
 }
 
+#game-info p {
+  padding: 2rem;
+  text-align: center;
+}
+
 .timer {
   background-color: rgb(2, 63, 2);
   border-radius: 5px;
@@ -286,6 +291,9 @@ body {
 
   font-size: 2rem;
   font-family: 'Roboto', sans-serif;
+
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .leaderboard-score {
@@ -299,4 +307,17 @@ body {
 
 .leaderboard-score hr {
   width: 100%;
+}
+
+#close-leaderboard-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  border: none;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 1rem;
+  color: rgb(2, 63, 2);
+  background-color: white;
 }
