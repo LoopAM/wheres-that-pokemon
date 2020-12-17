@@ -266,6 +266,14 @@ body {
   border-radius: 5px;
 
   box-shadow: 0 0 1rem black;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#leaderboard-screen::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 #leaderboard-screen h1 {
@@ -291,9 +299,6 @@ body {
 
   font-size: 2rem;
   font-family: 'Roboto', sans-serif;
-
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .leaderboard-score {
@@ -321,3 +326,37 @@ body {
   color: rgb(2, 63, 2);
   background-color: white;
 }
+
+/* CSS FOR ZOOM BEHAVIOR */
+/*#game-main {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+#game-main::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background-image: url('./assets/pokemon-game.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  will-change: background-position;
+}
+
+#game-main:hover #game-canvas {
+  opacity: 0;
+  position: absolute;
+}
+
+#game-main:hover::after {
+  opacity: 1;
+  background-size: 250%;
+  cursor: zoom-in;
+  background-position: calc(var(--mouse-x) * 1%) calc(var(--mouse-y) * 1%);
+}*/
+

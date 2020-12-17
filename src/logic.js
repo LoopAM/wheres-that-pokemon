@@ -22,14 +22,12 @@ function drawCircle(x, y) {
   img.style.left = x - 15   + 'px';
   img.style.top = y - 15 + 'px';
   game.appendChild(img);
-  console.log('circle placed')
 }
 
 function getClickLocation(e) {
   const rect = e.target.getBoundingClientRect();
   const cursorX = e.clientX - rect.left;
   const cursorY = e.clientY - rect.top;
-  console.log(cursorX, cursorY);
 
   drawCircle(cursorX + rect.left, cursorY + rect.top);
 
@@ -53,7 +51,6 @@ function checkCoords(e) {
         obj.x > x - 15 &&
         obj.y < y + 15 &&
         obj.y > y - 15) {
-          console.log('Success', obj);
           (obj.isFound === false) ? obj.isFound = true : '';
         }
   });
@@ -63,10 +60,8 @@ function checkCoords(e) {
 
 function checkWin() {
   if (targets.every( obj => obj.isFound === true)) {
-    console.log('YOU WON!!!')
     clearInterval(timerInterval);
     document.getElementById('score-screen').classList.toggle('hidden');
-    ;
 
     const diffInHours = time / 3600000;
     const hours = Math.floor(diffInHours);
@@ -93,6 +88,27 @@ function handleGameClick(e) {
   checkWin();
 }
 
+/* function handleMouseMove(e) {
+  const dimensions = this.getBoundingClientRect();
+  const [x, y] = [
+    e.clientX - dimensions.left,
+    e.clientY - dimensions.top
+  ];
+  const [percentX, percentY] = [
+    Math.round(100 / (dimensions.width / x)),
+    Math.round(100 / (dimensions.height / y))
+  ];
+  this.style.setProperty('--mouse-x', percentX);
+  this.style.setProperty('--mouse-y', percentY);
+}
+
+function zoom(width, height) {
+  const wrapper = document.getElementById('game-main');
+  wrapper.style.width = `${width}px`;
+  wrapper.style.height = `${height}px`;
+  wrapper.addEventListener('mousemove', handleMouseMove, false);
+} */
+
 // Setting up game ----------------------------------
 function displayCharacterTargets() {
   targets.forEach( obj => {
@@ -100,19 +116,31 @@ function displayCharacterTargets() {
     targetImg.id = obj.character;
     targetImg.classList.add('target-img');
     targetImg.src = `./assets/${obj.character}.png`;
-    console.log(targetImg);
     gameInfo.appendChild(targetImg);
     requestAnimationFrame( () => {
-      targetImg.classList.add('fade-in')
+      targetImg.classList.add('fade-in');
     });
-  })
+  });
+}
+
+function getRandomCoords() {
+  // 9 docs in firestore, replace eventaully with collections.size
+  const numberOfCoords = 9;
+  const randomCoords = [];
+  while (randomCoords.length < 3) {
+    const coord = Math.floor(Math.random() * numberOfCoords);
+    if (randomCoords.indexOf(coord) === -1 ) randomCoords.push(coord);
+  }
+  return randomCoords;
 }
 
 function getCharacterLocations() {
+  const randomCoords = getRandomCoords();
   store.collection('coordinates').get().then( coords => {
     coords.forEach( obj => {
-      console.log(obj.data());
-      targets.push(obj.data());
+      if (randomCoords.includes(obj.data().index)) {
+        targets.push(obj.data());
+      }
     })
   }).then(() => displayCharacterTargets());
 }
@@ -160,16 +188,15 @@ function fetchGameScene() {
   const img = document.createElement('img');
   img.id = 'game-canvas';
   img.classList.add('game-canvas');
-  img.alt = 'An image of many difference pokemon';
+  img.alt = 'An image of many different pokemon';
 
   gsRef.getDownloadURL().then( url => {
-    console.log(url);
     img.src = url;
   }).catch( error => {
     console.log('Failed to fetch scene.', error);
   })
 
-  img.addEventListener('click', handleGameClick);
+  img.addEventListener('click', handleGameClick, false);
   game.appendChild(img);
 
   img.onload = () => {
@@ -187,6 +214,7 @@ function startGame() {
   gameInfo.innerHTML = '';
   getCharacterLocations();
   fetchGameScene();
+  //zoom(700, 700);
 }
 
 // Game end functionality -------------------
@@ -200,7 +228,6 @@ function submitScore(e) {
     score: score,
     date: new Date(),
   }).then( () => {
-    console.log('Document successfully written!');
     document.getElementById('score-screen').classList.toggle('hidden');
   }).catch( error => {
     console.log('Error writing document', error);
@@ -213,10 +240,11 @@ function displayLeaderboard() {
   const leaderboardDiv = document.getElementById('leaderboard-div');
   leaderboardDiv.innerHTML = '';
 
-  store.collection('scores').get().then( scores => {
+  store.collection('scores')
+  .orderBy('score', 'asc')
+  .get().then( scores => {
     scores.forEach( obj => {
       const score = obj.data();
-      console.log(score);
 
       const leaderDiv = document.createElement('div');
       leaderDiv.classList.add('leaderboard-score');
@@ -248,7 +276,7 @@ function displayLeaderboard() {
 
       leaderboardDiv.appendChild(leaderDiv);
       leaderboardDiv.appendChild(document.createElement('hr'));
-    })
+    });
 
     leaderboard.classList.toggle('hidden');
   }).catch( error => {
